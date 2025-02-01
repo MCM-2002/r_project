@@ -1,0 +1,65 @@
+---
+title: "R_project"
+author: "PS/2021/078_M.C.MADUSANKA"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+```{r}
+# Clear environment and load libraries
+rm(list=ls())
+library(Hmisc)
+library(ggplot2)
+
+# Load data
+data <- read.csv("C:\\Users\\M-C-S\\Downloads\\COVID19_line_list_data.csv")
+describe(data)
+
+# Clean up death column
+data$death_dummy <- as.integer(data$death != 0)
+death_rate <- sum(data$death_dummy) / nrow(data)
+print(paste("Death rate:", death_rate))
+
+# Handle missing values
+data <- data[complete.cases(data$age, data$gender), ]
+
+# Analyze age
+dead <- subset(data, death_dummy == 1)
+alive <- subset(data, death_dummy == 0)
+mean_age_dead <- mean(dead$age, na.rm = TRUE)
+mean_age_alive <- mean(alive$age, na.rm = TRUE)
+print(paste("Mean age (dead):", mean_age_dead))
+print(paste("Mean age (alive):", mean_age_alive))
+
+# T-test for age
+t_test_age <- t.test(alive$age, dead$age, alternative = "two.sided", conf.level = 0.99)
+print(t_test_age)
+
+# Visualize age distribution
+ggplot(data, aes(x = factor(death_dummy), y = age)) +
+  geom_boxplot() +
+  labs(x = "Death Status", y = "Age", title = "Age Distribution by Death Status")
+
+# Analyze gender
+men <- subset(data, gender == "male")
+women <- subset(data, gender == "female")
+death_rate_men <- mean(men$death_dummy, na.rm = TRUE)
+death_rate_women <- mean(women$death_dummy, na.rm = TRUE)
+print(paste("Death rate (men):", death_rate_men))
+print(paste("Death rate (women):", death_rate_women))
+
+# T-test for gender
+t_test_gender <- t.test(men$death_dummy, women$death_dummy, alternative = "two.sided", conf.level = 0.99)
+print(t_test_gender)
+
+# Confidence interval for gender difference
+prop_test_gender <- prop.test(x = c(sum(men$death_dummy), sum(women$death_dummy)), n = c(nrow(men), nrow(women)), conf.level = 0.99)
+print(prop_test_gender)
+
+
+
+
+```
+
