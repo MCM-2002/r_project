@@ -33,7 +33,7 @@ mean_age_alive <- mean(alive$age, na.rm = TRUE)
 print(paste("Mean age (dead):", mean_age_dead))
 print(paste("Mean age (alive):", mean_age_alive))
 
-# T-test for age
+# T-test for ages
 t_test_age <- t.test(alive$age, dead$age, alternative = "two.sided", conf.level = 0.99)
 print(t_test_age)
 
