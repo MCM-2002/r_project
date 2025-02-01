@@ -8,7 +8,7 @@ output:
   pdf_document: default
 ---
 ```{r}
-# Clear environment and load libraries
+# Clear environment and load librarie
 rm(list=ls())
 library(Hmisc)
 library(ggplot2)
